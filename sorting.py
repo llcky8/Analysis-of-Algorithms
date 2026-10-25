@@ -1,6 +1,9 @@
+import csv
 import random
 import statistics
 import time
+
+import matplotlib.pyplot as plt
 
 
 def merge(left, right, counters=None):
@@ -130,3 +133,63 @@ if __name__ == "__main__":
         print(key, f"{t*1000:.3f} ms")
     for key, ops in results_ops.items():
         print(key, ops)
+
+    ns = SIZES
+
+    with open('results.csv', 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['algorithm', 'n', 'median_time_ms', 'ns_per_record'])
+        for n in ns:
+            for name in ['merge_sort', 'radix_sort']:
+                t_ms = results_time[(name, n)] * 1000
+                writer.writerow([name, n, f"{t_ms:.3f}", f"{t_ms*1e6/n:.1f}"])
+
+        f.write('\n')
+        writer.writerow(['algorithm', 'n', 'counters'])
+        for n in ns:
+            for name in ['merge_sort', 'radix_sort']:
+                writer.writerow([name, n, results_ops[(name, n)]])
+
+    # время
+    merge_times = [results_time[("merge_sort", n)] * 1000 for n in ns]
+    radix_times = [results_time[("radix_sort", n)] * 1000 for n in ns]
+
+    plt.figure()
+    plt.plot(ns, merge_times, marker='o', label='Merge Sort')
+    plt.plot(ns, radix_times, marker='s', label='Radix Sort')
+    plt.xlabel('Input size n')
+    plt.ylabel('Median elapsed time (ms)')
+    plt.title('Elapsed time vs input size')
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.5)
+    plt.savefig('time_vs_n.png', dpi=150, bbox_inches='tight')
+
+    # операции merge sort
+    merge_comp = [results_ops[("merge_sort", n)]["comparisons"] for n in ns]
+    merge_copy = [results_ops[("merge_sort", n)]["copies"] for n in ns]
+
+    plt.figure()
+    plt.plot(ns, merge_comp, marker='o', label='Comparisons')
+    plt.plot(ns, merge_copy, marker='s', label='Copies')
+    plt.xlabel('Input size n')
+    plt.ylabel('Operation count')
+    plt.title('Merge Sort: operation counts vs input size')
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.5)
+    plt.savefig('merge_ops_vs_n.png', dpi=150, bbox_inches='tight')
+
+    # операции radix sort
+    radix_insp = [results_ops[("radix_sort", n)]["digit_inspections"] for n in ns]
+    radix_place = [results_ops[("radix_sort", n)]["placements"] for n in ns]
+
+    plt.figure()
+    plt.plot(ns, radix_insp, marker='o', label='Digit inspections')
+    plt.plot(ns, radix_place, marker='s', label='Placements')
+    plt.xlabel('Input size n')
+    plt.ylabel('Operation count')
+    plt.title('Radix Sort: operation counts vs input size')
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.5)
+    plt.savefig('radix_ops_vs_n.png', dpi=150, bbox_inches='tight')
+
+    plt.show()
