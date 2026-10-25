@@ -69,7 +69,7 @@ def is_ascending(arr):
 
 
 def same_multiset(a, b):
-    return sorted(a) == sorted(b)  # встроенный sort тут разрешён — это просто сверка, не наш алгоритм
+    return sorted(a) == sorted(b)  # встроенный sort
 
 
 def generate_dataset(n, seed):
@@ -80,7 +80,7 @@ def generate_dataset(n, seed):
 SIZES = [1000, 5000, 10000, 50000, 100000]
 
 
-def benchmark(sort_fn, data, runs=3):
+def benchmark(sort_fn, data, runs=7):
     times = []
     for _ in range(runs):
         arr_copy = data[:]
@@ -106,6 +106,7 @@ if __name__ == "__main__":
         "repeated values": [5, 2, 5, 2, 5, 0],
         "already sorted": [1, 2, 3, 4, 5],
         "reverse order": [9, 7, 5, 3, 1],
+        "mixed digit lengths": [9999999, 0, 10, 1000000, 5, 10],
     }
 
     for name, data in test_cases.items():
@@ -113,9 +114,15 @@ if __name__ == "__main__":
             result = sort_fn(data)
             ok_order = is_ascending(result)
             ok_values = same_multiset(result, data)
-            print(f"{name} / {sort_name}: order={ok_order}, values={ok_values}")
+            print(f"{name} / {sort_name}: input={data} -> output={result}, order={ok_order}, values={ok_values}")
 
     datasets = {n: generate_dataset(n, seed=1000 + n) for n in SIZES}
+
+    for n, data in datasets.items():
+        for sort_name, sort_fn in [("merge_sort", merge_sort), ("radix_sort", radix_sort)]:
+            result = sort_fn(data)
+            ok = len(result) == n and is_ascending(result) and same_multiset(result, data)
+            print(f"dataset n={n} / {sort_name}: len={len(result)}, sorted and same values: {ok}")
 
     for n, data in datasets.items():
         print(f"n={n}, seed={1000 + n}, first 5: {data[:5]}")
@@ -130,7 +137,7 @@ if __name__ == "__main__":
         results_ops[("radix_sort", n)] = count_operations(radix_sort, data, ["digit_inspections", "placements", "copies_back"])
 
     for key, t in results_time.items():
-        print(key, f"{t*1000:.3f} ms")
+        print(key, f"{t*1000:.3f} ms, {t*1e9/key[1]:.1f} ns/element")
     for key, ops in results_ops.items():
         print(key, ops)
 

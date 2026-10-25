@@ -1,0 +1,23 @@
+algorithm,n,median_time_ms,ns_per_record
+merge_sort,1000,1.899,1898.7
+radix_sort,1000,0.669,669.2
+merge_sort,5000,11.087,2217.4
+radix_sort,5000,3.157,631.5
+merge_sort,10000,24.923,2492.3
+radix_sort,10000,6.453,645.3
+merge_sort,50000,144.379,2887.6
+radix_sort,50000,33.990,679.8
+merge_sort,100000,324.903,3249.0
+radix_sort,100000,102.638,1026.4
+
+algorithm,n,counters
+merge_sort,1000,"{'comparisons': 8724, 'copies': 9976}"
+radix_sort,1000,"{'digit_inspections': 7000, 'placements': 7000, 'copies_back': 7000}"
+merge_sort,5000,"{'comparisons': 55188, 'copies': 61808}"
+radix_sort,5000,"{'digit_inspections': 35000, 'placements': 35000, 'copies_back': 35000}"
+merge_sort,10000,"{'comparisons': 120441, 'copies': 133616}"
+radix_sort,10000,"{'digit_inspections': 70000, 'placements': 70000, 'copies_back': 70000}"
+merge_sort,50000,"{'comparisons': 718217, 'copies': 784464}"
+radix_sort,50000,"{'digit_inspections': 350000, 'placements': 350000, 'copies_back': 350000}"
+merge_sort,100000,"{'comparisons': 1536088, 'copies': 1668928}"
+radix_sort,100000,"{'digit_inspections': 700000, 'placements': 700000, 'copies_back': 700000}"
