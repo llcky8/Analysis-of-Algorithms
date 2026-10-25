@@ -45,6 +45,29 @@ def radix_sort(arr):
     return result
 
 
+def is_ascending(arr):
+    return all(arr[i] <= arr[i + 1] for i in range(len(arr) - 1))
+
+
+def same_multiset(a, b):
+    return sorted(a) == sorted(b)  # встроенный sort тут разрешён — это просто сверка, не наш алгоритм
+
+
 if __name__ == "__main__":
     print(merge_sort([5, 3, 8, 1]))
     print(radix_sort([5, 3, 8, 1]))
+
+    test_cases = {
+        "empty": [],
+        "one value": [42],
+        "repeated values": [5, 2, 5, 2, 5, 0],
+        "already sorted": [1, 2, 3, 4, 5],
+        "reverse order": [9, 7, 5, 3, 1],
+    }
+
+    for name, data in test_cases.items():
+        for sort_name, sort_fn in [("merge_sort", merge_sort), ("radix_sort", radix_sort)]:
+            result = sort_fn(data)
+            ok_order = is_ascending(result)
+            ok_values = same_multiset(result, data)
+            print(f"{name} / {sort_name}: order={ok_order}, values={ok_values}")
