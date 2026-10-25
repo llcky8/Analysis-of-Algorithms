@@ -1,3 +1,6 @@
+import random
+
+
 def merge(left, right):
     result = []
     i = j = 0
@@ -53,6 +56,14 @@ def same_multiset(a, b):
     return sorted(a) == sorted(b)  # встроенный sort тут разрешён — это просто сверка, не наш алгоритм
 
 
+def generate_dataset(n, seed):
+    rng = random.Random(seed)
+    return [rng.randint(0, 9_999_999) for _ in range(n)]
+
+
+SIZES = [1000, 5000, 10000, 50000, 100000]
+
+
 if __name__ == "__main__":
     print(merge_sort([5, 3, 8, 1]))
     print(radix_sort([5, 3, 8, 1]))
@@ -71,3 +82,8 @@ if __name__ == "__main__":
             ok_order = is_ascending(result)
             ok_values = same_multiset(result, data)
             print(f"{name} / {sort_name}: order={ok_order}, values={ok_values}")
+
+    datasets = {n: generate_dataset(n, seed=1000 + n) for n in SIZES}
+
+    for n, data in datasets.items():
+        print(f"n={n}, seed={1000 + n}, first 5: {data[:5]}")
